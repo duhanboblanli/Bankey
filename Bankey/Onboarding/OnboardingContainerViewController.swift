@@ -13,10 +13,10 @@ class OnboardingContainerViewController: UIViewController {
     // Array of ViewControllers for each page
     var pages = [UIViewController]()
     
-    var currentVC: UIViewController {
-        didSet {
-        }
-    }
+    var currentVC: UIViewController
+    
+    let closeButton = UIButton(type: .system)
+
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         
@@ -43,8 +43,15 @@ class OnboardingContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .systemPurple
+        setup()
+        style()
+        layout()
         
+        
+    }
+    
+    private func setup() {
+        view.backgroundColor = .systemPurple
         // Add child controller to parent controller
         addChild(pageViewController)
         // Add child view to parent view
@@ -64,7 +71,26 @@ class OnboardingContainerViewController: UIViewController {
         pageViewController.setViewControllers([pages.first!], direction: .forward, animated: false, completion: nil)
         currentVC = pages.first!
     }
-}
+    
+    private func style() {
+        // Close
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        closeButton.setTitle("Close", for: [])
+        closeButton.addTarget(self, action: #selector(closeTapped), for: .primaryActionTriggered)
+
+        view.addSubview(closeButton)
+    }
+    
+    private func layout() {
+        // Close
+        NSLayoutConstraint.activate([
+            closeButton.leadingAnchor.constraint(equalToSystemSpacingAfter: view.leadingAnchor, multiplier: 2),
+            closeButton.topAnchor.constraint(equalToSystemSpacingBelow: view.safeAreaLayoutGuide.topAnchor, multiplier: 2)
+        ])
+    }
+    
+    
+} // ends of OnboardingContainerViewController
 
 // MARK: - UIPageViewControllerDataSource
 extension OnboardingContainerViewController: UIPageViewControllerDataSource {
@@ -97,5 +123,12 @@ extension OnboardingContainerViewController: UIPageViewControllerDataSource {
 
     func presentationIndex(for pageViewController: UIPageViewController) -> Int {
         return pages.firstIndex(of: self.currentVC) ?? 0
+    }
+}
+
+//MARK: - Actions
+extension OnboardingContainerViewController {
+    @objc func closeTapped(_ sender: UIButton) {
+        // TODO
     }
 }
